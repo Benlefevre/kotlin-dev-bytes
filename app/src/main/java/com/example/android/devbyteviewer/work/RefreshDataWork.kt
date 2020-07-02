@@ -27,19 +27,21 @@ import retrofit2.HttpException
 class RefreshDataWorker(appContext: Context, params: WorkerParameters):
         CoroutineWorker(appContext, params) {
 
-    // TODO (06) Create a companion object and define a WORK_NAME constant.
+    companion object{
+        const val WORK_NAME = "RefreshDataWorker"
+    }
 
     /**
      * A coroutine-friendly method to do your work.
      */
-    override suspend fun doWork(): Payload {
+    override suspend fun doWork(): Result {
         val database = getDatabase(applicationContext)
         val repository = VideosRepository(database)
         return try {
             repository.refreshVideos()
-            Payload(Result.SUCCESS)
+            Result.success()
         } catch (e: HttpException) {
-            Payload(Result.RETRY)
+            Result.retry()
         }
     }
 }
