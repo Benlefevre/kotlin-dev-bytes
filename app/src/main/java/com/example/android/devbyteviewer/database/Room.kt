@@ -17,8 +17,17 @@
 
 package com.example.android.devbyteviewer.database
 
-// TODO (01) Create a @Dao interface called VideoDao.
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
-// TODO (02) Add SQL @Query getVideos() function that returns a List of DatabaseVideo.
+@Dao
+interface VideoDao{
 
-// TODO (03) Add SQL @Insert insertAll() that replaces on conflict (or upsert).
+    @Query("SELECT * FROM databasevideo")
+    fun getVideos() : List<DatabaseVideo>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(vararg videos : DatabaseVideo)
+}
