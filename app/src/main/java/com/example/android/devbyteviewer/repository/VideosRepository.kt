@@ -27,7 +27,7 @@ import com.example.android.devbyteviewer.network.asDatabaseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class VideoRepository(private val database: VideosDatabase) {
+class VideosRepository(private val database: VideosDatabase) {
 
     val videos : LiveData<List<Video>> = Transformations.map(database.videoDao.getVideos()){
         it.asDomainModel()
@@ -35,7 +35,7 @@ class VideoRepository(private val database: VideosDatabase) {
 
     suspend fun refreshVideos() {
         withContext(Dispatchers.IO) {
-            val playlist = Network.devbytes.getPlaylist().await()
+            val playlist = Network.devbytes.getPlaylist()
             database.videoDao.insertAll(*playlist.asDatabaseModel())
         }
     }
