@@ -32,7 +32,8 @@ import java.util.concurrent.TimeUnit
  */
 class DevByteApplication : Application() {
 
-    val applicationScope = CoroutineScope(Dispatchers.Default)
+    private val applicationScope = CoroutineScope(Dispatchers.Default)
+
 
     private fun delayedInit() {
         applicationScope.launch {
@@ -46,20 +47,21 @@ class DevByteApplication : Application() {
                 .setRequiresBatteryNotLow(true)
                 .setRequiresCharging(true)
                 .apply {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                         setRequiresDeviceIdle(true)
                     }
                 }.build()
 
-        val repeatingRequest
-                = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS)
-                .setConstraints(constraints)
-                .build()
+        val repeatingRequest =
+                PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS)
+                        .setConstraints(constraints)
+                        .build()
 
         WorkManager.getInstance().enqueueUniquePeriodicWork(
                 RefreshDataWorker.WORK_NAME,
                 ExistingPeriodicWorkPolicy.KEEP,
-                repeatingRequest)
+                repeatingRequest
+        )
     }
 
     /**
